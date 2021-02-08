@@ -10,6 +10,10 @@ type Person struct {
   Name string   `recap:"name"`
   Age int       `recap:"age"`
   Public bool   `recap:"public;default=false"`
+  Fruits Fruits
+}
+
+type Fruits struct {
   Apple bool    `recap:"fruit;contains=apple"`
   Orange bool   `recap:"fruit;contains=orange"`
   Banana bool   `recap:"fruit;contains=banana"`
