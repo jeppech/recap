@@ -25,5 +25,5 @@ func main() {
   fmt.Printf("%+v\n", pers)
 }
 
-// {Name:Jeppe Age:31 Public:false Apple:false Orange:true Banana:true}
+// {Name:Jeppe Age:31 Public:false Fruits:{Apple:false Orange:true Banana:true}}
 ```
