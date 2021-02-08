@@ -7,14 +7,17 @@ package main
 import "github.com/jeppech/recap-go"
 
 type Person struct {
-	Name string		`recap:"name"`
-	Age int				`recap:"age"`
-	Public bool		`recap:"public;default=false"`
+  Name string   `recap:"name"`
+  Age int       `recap:"age"`
+  Public bool   `recap:"public;default=false"`
+  Apple bool    `recap:"fruit;contains=apple"`
+  Orange bool   `recap:"fruit;contains=orange"`
+  Banana bool   `recap:"fruit;contains=banana"`
 }
 
 func main() {
-	pers := Person{}
-	recap.Parse(pers, `(?P<name>) (?P<age>) (?P<public>)`, "Jeppe 31")
-	fmt.Printf("%+v\n", pers)
+  pers := Person{}
+  recap.Parse(pers, `(?P<name>[A-Za-z]+) (?P<age>\d+) (?:(?P<public>(true|false)))? \[(?P<fruit>.*)\]`, "Jeppe 31 [orange banana]")
+  fmt.Printf("%+v\n", pers)
 }
 ```
