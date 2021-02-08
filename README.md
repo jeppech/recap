@@ -17,7 +17,9 @@ type Person struct {
 
 func main() {
   pers := Person{}
-  recap.Parse(pers, `(?P<name>[A-Za-z]+) (?P<age>\d+) (?:(?P<public>(true|false)))? \[(?P<fruit>.*)\]`, "Jeppe 31 [orange banana]")
+  recap.Parse(&pers, `(?P<name>[A-Za-z]+) (?P<age>\d+) (?:(?P<public>(true|false)))?\W?\[(?P<fruit>.*)\]`, "Jeppe 31 [orange banana]")
   fmt.Printf("%+v\n", pers)
 }
+
+// {Name:Jeppe Age:31 Public:false Apple:false Orange:true Banana:true}
 ```
