@@ -21,8 +21,16 @@ type Fruits struct {
 
 func main() {
   pers := Person{}
-  recap.Parse(&pers, `(?P<name>[A-Za-z]+) (?P<age>\d+) (?:(?P<public>(true|false)))?\W?\[(?P<fruit>.*)\]`, "Jeppe 31 [orange banana]")
-  fmt.Printf("%+v\n", pers)
+  err, match := recap.Parse(&pers, `(?P<name>[A-Za-z]+) (?P<age>\d+) (?:(?P<public>(true|false)))?\W?\[(?P<fruit>.*)\]`, "Jeppe 31 [orange banana]")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if (match) {
+		fmt.Printf("%+v\n", pers)
+	} else {
+		// did not match
+	}
 }
 
 // {Name:Jeppe Age:31 Public:false Fruits:{Apple:false Orange:true Banana:true}}

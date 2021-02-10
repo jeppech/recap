@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-func Parse(item interface{}, regex string, value string) error {
+func Parse(item interface{}, regex string, value string) (error, bool) {
 	rx := regexp.MustCompile(regex)
 
 	match := rx.FindStringSubmatch(value)
@@ -16,9 +16,9 @@ func Parse(item interface{}, regex string, value string) error {
 
 	if len(match) == 0 {
 		if rx.MatchString(value) {
-			return nil
+			return nil, true
 		}
-		return fmt.Errorf("regular expression did not match string")
+		return nil, false
 	}
 
 	for i, name := range rx.SubexpNames() {
@@ -27,7 +27,12 @@ func Parse(item interface{}, regex string, value string) error {
 		}
 	}
 
-	return mapRegexGroupsToStruct(item, m, "")
+	err := mapRegexGroupsToStruct(item, m, "")
+	if err != nil {
+		return err, false
+	} else {
+		return nil, true
+	}
 }
 
 func mapRegexGroupsToStruct(item interface{}, values map[string]string, prefix string) error {
@@ -36,7 +41,7 @@ func mapRegexGroupsToStruct(item interface{}, values map[string]string, prefix s
 	var err error
 
 	if !v.CanAddr() {
-		err = fmt.Errorf("cannot assign to the item passed, item must be a pointer in order to assign")
+		return fmt.Errorf("cannot assign to the item passed, item must be a pointer in order to assign")
 	}
 
 	for i := 0; i < v.NumField(); i++ {
@@ -55,7 +60,7 @@ func mapRegexGroupsToStruct(item interface{}, values map[string]string, prefix s
 			err = mapRegexGroupsToStruct(v.Interface(), values, subPrefix)
 
 			if err != nil {
-				fmt.Println(err)
+				return err
 			}
 			continue
 		}
@@ -73,7 +78,7 @@ func mapRegexGroupsToStruct(item interface{}, values map[string]string, prefix s
 
 				typeVal, err := convertToType(rxVal, fieldType.Type.Name())
 				if err != nil {
-					fmt.Println(err)
+					return err
 				} else {
 					field.Set(reflect.ValueOf(typeVal))
 				}
