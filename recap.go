@@ -14,7 +14,7 @@ func Parse(item interface{}, regex string, value string) (error, bool) {
 	match := rx.FindStringSubmatch(value)
 	m := map[string]string{}
 
-	if len(match) == 0 {
+	if match == nil {
 		if rx.MatchString(value) {
 			return nil, true
 		}
@@ -105,6 +105,8 @@ func parseConditions(conds string, value string) string {
 		if (method[0] == "default") {
 			if len(value) == 0 {
 				return method[1]
+			} else {
+				return value
 			}
 		}
 	}
