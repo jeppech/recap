@@ -105,13 +105,11 @@ func parseConditions(conds string, value string) string {
 		if (method[0] == "default") {
 			if len(value) == 0 {
 				return method[1]
-			} else {
-				return value
 			}
 		}
 	}
 
-	return "false"
+	return value
 }
 
 func convertToType(value string, valueType string) (interface{}, error) {
