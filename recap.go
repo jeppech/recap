@@ -8,9 +8,7 @@ import (
 	"strings"
 )
 
-func Parse(item interface{}, regex string, value string) (error, bool) {
-	rx := regexp.MustCompile(regex)
-
+func Parse(item interface{}, rx *regexp.Regexp, value string) (error, bool) {
 	match := rx.FindStringSubmatch(value)
 	m := map[string]string{}
 
