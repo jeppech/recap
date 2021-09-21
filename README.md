@@ -1,4 +1,4 @@
-# recap-go
+# recap
 This library will map NAMED regex capture groups, to a tagged struct
 
 ```golang
