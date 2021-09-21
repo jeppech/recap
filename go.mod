@@ -1,3 +1,3 @@
-module github.com/jeppech/recap-go
+module github.com/jeppech/recap
 
-go 1.15
+go 1.17
