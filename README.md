@@ -4,7 +4,7 @@ This library will map NAMED regex capture groups, to a tagged struct
 ```golang
 package main
 
-import "github.com/jeppech/recap-go"
+import "github.com/jeppech/recap"
 
 type Person struct {
   Name string   `recap:"name"`
