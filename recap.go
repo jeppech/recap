@@ -8,15 +8,15 @@ import (
 	"strings"
 )
 
-func Parse(item interface{}, rx *regexp.Regexp, value string) (error, bool) {
+func Parse(item interface{}, rx *regexp.Regexp, value string) (bool, error) {
 	match := rx.FindStringSubmatch(value)
 	m := map[string]string{}
 
-	if match == nil {
+	if len(match) == 0 {
 		if rx.MatchString(value) {
-			return nil, true
+			return true, nil
 		}
-		return nil, false
+		return false, nil
 	}
 
 	for i, name := range rx.SubexpNames() {
@@ -27,9 +27,9 @@ func Parse(item interface{}, rx *regexp.Regexp, value string) (error, bool) {
 
 	err := mapRegexGroupsToStruct(item, m, "")
 	if err != nil {
-		return err, false
+		return false, err
 	} else {
-		return nil, true
+		return true, nil
 	}
 }
 
@@ -45,12 +45,12 @@ func mapRegexGroupsToStruct(item interface{}, values map[string]string, prefix s
 	for i := 0; i < v.NumField(); i++ {
 		field := v.Field(i)
 		fieldType := v.Type().Field(i)
-		
+
 		if field.Kind() == reflect.Struct {
 			v := field.Addr()
 			tag := fieldType.Tag
 			subPrefix := prefix
-			
+
 			if tagValue, ok := tag.Lookup("recap"); ok {
 				subPrefix = tagValue
 			}
@@ -66,11 +66,11 @@ func mapRegexGroupsToStruct(item interface{}, values map[string]string, prefix s
 		tag := fieldType.Tag
 
 		if tagVal, ok := tag.Lookup("recap"); ok {
-			parts := strings.Split(tagVal,";")
-			valName := prefix+parts[0]
+			parts := strings.Split(tagVal, ";")
+			valName := prefix + parts[0]
 
 			if rxVal, ok := values[valName]; ok {
-				if (len(parts) > 1) {
+				if len(parts) > 1 {
 					rxVal = parseConditions(parts[1], rxVal)
 				}
 
@@ -97,10 +97,10 @@ func parseConditions(conds string, value string) string {
 			continue
 		}
 
-		if (method[0] == "contains") {
+		if method[0] == "contains" {
 			return strconv.FormatBool(strings.Contains(value, method[1]))
 		}
-		if (method[0] == "default") {
+		if method[0] == "default" {
 			if len(value) == 0 {
 				return method[1]
 			}
@@ -118,11 +118,11 @@ func convertToType(value string, valueType string) (interface{}, error) {
 	var retVal interface{}
 	var err error
 
-	if (strings.HasPrefix(valueType, "int")) {
+	if strings.HasPrefix(valueType, "int") {
 		intVal, err = strconv.ParseInt(value, 10, 64)
-	} else if (strings.HasPrefix(valueType, "uint")) {
+	} else if strings.HasPrefix(valueType, "uint") {
 		uintVal, err = strconv.ParseUint(value, 10, 64)
-	} else if (strings.HasPrefix(valueType, "float")) {
+	} else if strings.HasPrefix(valueType, "float") {
 		floatVal, err = strconv.ParseFloat(value, 64)
 	} else if valueType == "string" {
 		return value, nil
@@ -130,7 +130,7 @@ func convertToType(value string, valueType string) (interface{}, error) {
 		boolVal, err = strconv.ParseBool(value)
 	}
 
-	switch (valueType) {
+	switch valueType {
 	case "bool":
 		retVal = boolVal
 	case "int":
